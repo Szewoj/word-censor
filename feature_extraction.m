@@ -5,14 +5,18 @@ while i < 9
     ADS = audioDatastore(types(i));
     E=[];
     sigma=[];
+    data = [];
     j=1;
-    while ADS.hasdata
+    while j <= 500
         [audioIn,info] = read(ADS);
         [coeffs,delta,deltaDelta,loc] = mfcc(audioIn,info.SampleRate);
-        E(i,j,:) = [mean(coeffs),mean(delta),mean(deltaDelta)];
-        sigma(i,j,:) = [std(coeffs),std(delta),std(deltaDelta)];
-        j=j+1;
+        if size(coeffs,1)>65
+            data(j,:,:) = [coeffs(1:65,:),delta(1:65,:),deltaDelta(1:65,:)];
+            j=j+1;
+        end
     end
     j=1;
+    E(i,:,:) = mean(data);
+    sigma(i,:,:) = std(data);
     i=i+1;
 end
