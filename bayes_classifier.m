@@ -1,26 +1,42 @@
-% LOAD REFERENCE DATA
-load data\classifier1.mat
+% REQUIRES:
+% meanF - matrix of mean mfcc feature parameters
+% stdF  - matrix of standard deviation mfcc feature parameters
+% audioIn - sample of audio to analyze
+% info - audio input information
 
-[features, T, classes] = size(EF);
+% GET SIZE
+
+[T, features, classes] = size(meanF);
 
 % PERFORM MFCC ON INCOMING DATA
 
-% placeholder
-featureMatrix = ones(39, 50) * -1;
+winLen = 25; % ms
+overlap = 12.5; % ms
 
+win = hamming(round(info.SampleRate * winLen / 1000), 'periodic');
+ol = round(info.SampleRate * overlap / 1000);
+        
+[coeffs,delta,deltaDelta,loc] = mfcc(audioIn, info.SampleRate, ...
+        'Window', win, 'OverlapLength', ol, 'LogEnergy', 'Replace');
+featureMatrix = [coeffs, delta, deltaDelta];
 
 % CLASSIFY
 
-P = ones(classes,1)/classes; 
+P = ones(1,classes)/classes; 
 % start with equal distribution - every word is equally probable
 
-P_rel = zeros(classes,1);
+% Classification horizon
+h = min(T, size(featureMatrix,1));
 
-for t = 1:T
-    P_rel_full = normpdf(featureMatrix(:,t), ...
-                    EF(:,t,:), sF(:,t,:));
-    P_rel(:,1) = prod(P_rel_full, 1);
+P_rel = zeros(1,classes);
+
+for t = 1:h
+    P_rel_full = normpdf(featureMatrix(t,:), ...
+                    meanF(t,:,:), stdF(t,:,:));
+    P_rel(1,:) = prod(P_rel_full, 2);
     P = P .* P_rel;
     P = P / norm(P,1);
 end
 
+% OUTPUT:
+% P - probability of each word in list
