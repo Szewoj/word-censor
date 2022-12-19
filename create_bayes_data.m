@@ -6,7 +6,7 @@ types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/","sample
 % Parameters:
 nSamples = 500;
 nWords = 8;
-wordLength = 55;
+wordLength = 100;
 features = 39;
 
 winLen = 25; % ms
