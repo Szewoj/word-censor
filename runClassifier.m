@@ -1,6 +1,6 @@
 clear;
 
-load("data/classifierData")
+load("data/classifierData2")
 
 types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/","samples/forward/","samples/bird/","samples/visual/","samples/up/"];
 
@@ -22,7 +22,7 @@ for c = 1:length(types)
     for i = 1:thTestSet
         [audioIn,info] = read(ADS);
     
-        bayes_classifier;
+        bayes_classifier2;
         
         [val, class] = max(P);
         
