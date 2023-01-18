@@ -1,11 +1,18 @@
-clear
+clear;
 
-F = {[1 0 0], [0 1 0], [0 0 1]}
+load("data/classifierData2")
 
-for i = 1:3
-    m(i) = mean(F{i});
-end
-m
+types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/",...
+    "samples/forward/","samples/bird/","samples/visual/","samples/up/",...
+    "samples/go/","samples/stop/"];
 
-% load("data/classifierData2")
-% load("data/classifierData")
+anonA = 5;
+
+
+ADS = audioDatastore(types(2));
+    
+[audioIn,info] = read(ADS);
+
+bayes_classifier2;
+        
+[val, class] = max(P)

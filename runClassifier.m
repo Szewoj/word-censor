@@ -2,19 +2,29 @@ clear;
 
 load("data/classifierData2")
 
-types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/","samples/forward/","samples/bird/","samples/visual/","samples/up/"];
+types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/",...
+    "samples/forward/","samples/bird/","samples/visual/","samples/up/",...
+    ...
+    "samples/backward/","samples/bed/","samples/dog/","samples/down/",...
+    "samples/eight/","samples/five/","samples/four/","samples/go/",...
+    "samples/happy/","samples/house/","samples/learn/","samples/left/",...
+    "samples/nine/","samples/off/","samples/stop/","samples/wow/"];
 
-thLearningSet = 500;
 
-thTestSet = 1000;
+nWords = 8;
 
-classTh = 0.1;
+thLearningSet = 300;
+
+thTestSet = 600;
+
+% Base probability modifier for not blacklisted word
+anonA = 5;
 
 % Learning set hits and misses
-lsHitMiss = zeros(length(types)+1,2);
+lsHitMiss = zeros(nWords+1,2);
 
 % Test set hits and misses
-tsHitMiss = zeros(length(types)+1,2);
+tsHitMiss = zeros(nWords+1,2);
 
 for c = 1:length(types)
     ADS = audioDatastore(types(c));
@@ -26,27 +36,39 @@ for c = 1:length(types)
         
         [val, class] = max(P);
         
-        if class == c, hit = 1; else, hit = 2; end
-        
-        if val > classTh
-            if i > thLearningSet
-                tsHitMiss(c,hit) = tsHitMiss(c,hit)+1;
+        if c <= nWords
+            x = c;
+            if class == c
+                hit = 1;
             else
-                lsHitMiss(c,hit) = lsHitMiss(c,hit)+1;
+                hit = 2;
             end
         else
-            if i > thLearningSet
-                tsHitMiss(c,2) = tsHitMiss(c,2)+1;
+            x = 9;
+            if class == 9
+                hit = 1;
             else
-                lsHitMiss(c,2) = lsHitMiss(c,2)+1;
+                hit = 2;
             end
         end
+        
+        if i > thLearningSet
+            tsHitMiss(x,hit) = tsHitMiss(x,hit)+1;
+        else
+            lsHitMiss(x,hit) = lsHitMiss(x,hit)+1;
+        end
+        
     end
 end
+
+tsHitMiss = tsHitMiss ./ sum(tsHitMiss,2);
+lsHitMiss = lsHitMiss ./ sum(lsHitMiss,2);
 
 clf;
 subplot(2,1,1);
 bar(lsHitMiss);
+grid on;
 
 subplot(2,1,2);
 bar(tsHitMiss)
+grid on;
