@@ -22,11 +22,10 @@ features = 39;
 winLen = 25; % ms
 overlap = 12.5; % ms
 
-% Classifier data is in matrix of size k x 1 x l x m (mean)
-% or k x k x l x m (covariance)
+% Classifier data is in matrix of size k x l x m
 % where:
-% k - number of mfcc features
-% l - length of classifiable sample
+% k - length of classifiable sample
+% l - number of mfcc features
 % m - number of blacklisted words
 meanF=zeros(wordLength,features,nWords+1);
 stdF=zeros(wordLength,features,nWords+1);
