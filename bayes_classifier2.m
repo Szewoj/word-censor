@@ -14,6 +14,9 @@
 winLen = 25; % ms
 overlap = 12.5; % ms
 
+% sample to ms conversion
+ms2sConv = info.SampleRate * (winLen-overlap) / 1000;
+
 win = hamming(round(info.SampleRate * winLen / 1000), 'periodic');
 ol = round(info.SampleRate * overlap / 1000);
         
@@ -26,6 +29,8 @@ featureMatrix = [coeffs, delta, deltaDelta];
 first = find(featureMatrix(:,1) > -4, 1,'first');
 last = find(featureMatrix(:,1) > -4, 1,'last');
 featureMatrix = featureMatrix(first:last,:);
+
+R = [(first) * ms2sConv, (last) * ms2sConv];
 
 % CLASSIFY
 
@@ -56,3 +61,4 @@ end
 
 % OUTPUT:
 % P - probability of each word in list
+% R - range in samples where word was analysed
