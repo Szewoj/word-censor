@@ -2,8 +2,8 @@ clear;
 
 
 %
-types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/",...
-    "samples/forward/","samples/bird/","samples/visual/","samples/up/",...
+types = ["good_samples/cat/","good_samples/one/","good_samples/zero/","good_samples/follow/",...
+    "good_samples/forward/","good_samples/bird/","good_samples/visual/","good_samples/up/",...
     ...
     "samples/backward/","samples/bed/","samples/dog/","samples/down/",...
     "samples/eight/","samples/five/","samples/four/","samples/go/",...
@@ -13,7 +13,7 @@ types = ["samples/cat/","samples/one/","samples/zero/","samples/follow/",...
 % which of types are to be added to blacklist
 
 % Parameters:
-nSamples = 300;
+nSamples = 40;
 nWords = 8;
 wordLength = 100;
 minLen = 20;
@@ -53,9 +53,9 @@ while i <= nWords
         
         kMax = size(cepstr,2);
         
-        if kMax < minLen
-            continue
-        end
+%         if kMax < minLen
+%             continue
+%         end
         
         for k = 1:kMax
             F{k} = [F{k}, cepstr(:,k)];
@@ -80,7 +80,7 @@ while i <= nWords
 end
 
 F = cell(wordLength,1);
-for i = 1:length(types)
+for i = (nWords+1):length(types)
     ADS = audioDatastore(types(i));
     j=1;
     while j <= nSamples
